@@ -2,4 +2,15 @@
 
 Run a day using `cabal run day[number]`, e.g. `cabal run day3`.
 
-Put inputs in `./input/day[number]`
+In .env put one line with year, and one with a session cookie, see .env.example for example.
+
+To fetch a days description and your input use:
+```bash
+cabal run fetch [day]
+``` 
+
+Days should save solutions in `./answer/day[number]-part[number]`
+To actually submit your solutions use
+```bash
+cabal run submit [day] [part]
+```
