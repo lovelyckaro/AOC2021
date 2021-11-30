@@ -1,6 +1,6 @@
 {-# LANGUAGE TypeApplications #-}
 module Main where
-import SantasSack
+import SantaLib
 import System.Environment
 
 main :: IO ()

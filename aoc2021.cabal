@@ -24,7 +24,7 @@ extra-source-files: CHANGELOG.md
 library
   hs-source-dirs: lib
   exposed-modules:
-    SantasSack
+    SantaLib
   other-modules:
   build-depends:
     base >= 4,
