@@ -1,4 +1,7 @@
 module Main where
+import SantasSack
 
 main :: IO ()
-main = putStrLn "day 18 is not yet implemented"  
+main = do
+  inp <- getInput 18
+  putStrLn "day 18 is not yet implemented"  
