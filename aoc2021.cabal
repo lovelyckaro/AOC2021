@@ -21,13 +21,42 @@ maintainer:         love.lyckaro@hotmail.se
 -- category:
 extra-source-files: CHANGELOG.md
 
+library
+  hs-source-dirs: lib
+  exposed-modules:
+    SantasSack
+  other-modules:
+  build-depends:
+    base >= 4,
+    advent-of-code-api >= 0.2.8.0,
+    containers,
+    text
+  default-language: Haskell2010
+
+executable fetch
+  main-is: Fetch.hs
+  build-depends:
+    base >= 4,
+    aoc2021
+  hs-source-dirs: app
+  default-language: Haskell2010
+
+executable submit
+  main-is: Submit.hs
+  build-depends:
+    base >= 4,
+    aoc2021
+  hs-source-dirs: app
+  default-language: Haskell2010
+
 executable day1
     main-is: Day1.hs
     build-depends:
       base >=4.14.3.0,
       containers,
       megaparsec,
-      unordered-containers
+      unordered-containers,
+      aoc2021
     hs-source-dirs: app
     default-language: Haskell2010
 executable day2
@@ -36,7 +65,8 @@ executable day2
       base >=4.14.3.0,
       containers,
       megaparsec,
-      unordered-containers
+      unordered-containers,
+      aoc2021
     hs-source-dirs: app
     default-language: Haskell2010
 executable day3
@@ -45,7 +75,8 @@ executable day3
       base >=4.14.3.0,
       containers,
       megaparsec,
-      unordered-containers
+      unordered-containers,
+      aoc2021
     hs-source-dirs: app
     default-language: Haskell2010
 executable day4
@@ -54,7 +85,8 @@ executable day4
       base >=4.14.3.0,
       containers,
       megaparsec,
-      unordered-containers
+      unordered-containers,
+      aoc2021
     hs-source-dirs: app
     default-language: Haskell2010
 executable day5
@@ -63,7 +95,8 @@ executable day5
       base >=4.14.3.0,
       containers,
       megaparsec,
-      unordered-containers
+      unordered-containers,
+      aoc2021
     hs-source-dirs: app
     default-language: Haskell2010
 executable day6
@@ -72,7 +105,8 @@ executable day6
       base >=4.14.3.0,
       containers,
       megaparsec,
-      unordered-containers
+      unordered-containers,
+      aoc2021
     hs-source-dirs: app
     default-language: Haskell2010
 executable day7
@@ -81,7 +115,8 @@ executable day7
       base >=4.14.3.0,
       containers,
       megaparsec,
-      unordered-containers
+      unordered-containers,
+      aoc2021
     hs-source-dirs: app
     default-language: Haskell2010
 executable day8
@@ -90,7 +125,8 @@ executable day8
       base >=4.14.3.0,
       containers,
       megaparsec,
-      unordered-containers
+      unordered-containers,
+      aoc2021
     hs-source-dirs: app
     default-language: Haskell2010
 executable day9
@@ -99,7 +135,8 @@ executable day9
       base >=4.14.3.0,
       containers,
       megaparsec,
-      unordered-containers
+      unordered-containers,
+      aoc2021
     hs-source-dirs: app
     default-language: Haskell2010
 executable day10
@@ -108,7 +145,8 @@ executable day10
       base >=4.14.3.0,
       containers,
       megaparsec,
-      unordered-containers
+      unordered-containers,
+      aoc2021
     hs-source-dirs: app
     default-language: Haskell2010
 executable day11
@@ -117,7 +155,8 @@ executable day11
       base >=4.14.3.0,
       containers,
       megaparsec,
-      unordered-containers
+      unordered-containers,
+      aoc2021
     hs-source-dirs: app
     default-language: Haskell2010
 executable day12
@@ -126,7 +165,8 @@ executable day12
       base >=4.14.3.0,
       containers,
       megaparsec,
-      unordered-containers
+      unordered-containers,
+      aoc2021
     hs-source-dirs: app
     default-language: Haskell2010
 executable day13
@@ -135,7 +175,8 @@ executable day13
       base >=4.14.3.0,
       containers,
       megaparsec,
-      unordered-containers
+      unordered-containers,
+      aoc2021
     hs-source-dirs: app
     default-language: Haskell2010
 executable day14
@@ -144,7 +185,8 @@ executable day14
       base >=4.14.3.0,
       containers,
       megaparsec,
-      unordered-containers
+      unordered-containers,
+      aoc2021
     hs-source-dirs: app
     default-language: Haskell2010
 executable day15
@@ -153,7 +195,8 @@ executable day15
       base >=4.14.3.0,
       containers,
       megaparsec,
-      unordered-containers
+      unordered-containers,
+      aoc2021
     hs-source-dirs: app
     default-language: Haskell2010
 executable day16
@@ -162,7 +205,8 @@ executable day16
       base >=4.14.3.0,
       containers,
       megaparsec,
-      unordered-containers
+      unordered-containers,
+      aoc2021
     hs-source-dirs: app
     default-language: Haskell2010
 executable day17
@@ -171,7 +215,8 @@ executable day17
       base >=4.14.3.0,
       containers,
       megaparsec,
-      unordered-containers
+      unordered-containers,
+      aoc2021
     hs-source-dirs: app
     default-language: Haskell2010
 executable day18
@@ -180,7 +225,8 @@ executable day18
       base >=4.14.3.0,
       containers,
       megaparsec,
-      unordered-containers
+      unordered-containers,
+      aoc2021
     hs-source-dirs: app
     default-language: Haskell2010
 executable day19
@@ -189,7 +235,8 @@ executable day19
       base >=4.14.3.0,
       containers,
       megaparsec,
-      unordered-containers
+      unordered-containers,
+      aoc2021
     hs-source-dirs: app
     default-language: Haskell2010
 executable day20
@@ -198,7 +245,8 @@ executable day20
       base >=4.14.3.0,
       containers,
       megaparsec,
-      unordered-containers
+      unordered-containers,
+      aoc2021
     hs-source-dirs: app
     default-language: Haskell2010
 executable day21
@@ -207,7 +255,8 @@ executable day21
       base >=4.14.3.0,
       containers,
       megaparsec,
-      unordered-containers
+      unordered-containers,
+      aoc2021
     hs-source-dirs: app
     default-language: Haskell2010
 executable day22
@@ -216,7 +265,8 @@ executable day22
       base >=4.14.3.0,
       containers,
       megaparsec,
-      unordered-containers
+      unordered-containers,
+      aoc2021
     hs-source-dirs: app
     default-language: Haskell2010
 executable day23
@@ -225,7 +275,8 @@ executable day23
       base >=4.14.3.0,
       containers,
       megaparsec,
-      unordered-containers
+      unordered-containers,
+      aoc2021
     hs-source-dirs: app
     default-language: Haskell2010
 executable day24
@@ -234,7 +285,8 @@ executable day24
       base >=4.14.3.0,
       containers,
       megaparsec,
-      unordered-containers
+      unordered-containers,
+      aoc2021
     hs-source-dirs: app
     default-language: Haskell2010
 executable day25
@@ -243,6 +295,7 @@ executable day25
       base >=4.14.3.0,
       containers,
       megaparsec,
-      unordered-containers
+      unordered-containers,
+      aoc2021
     hs-source-dirs: app
     default-language: Haskell2010
