@@ -1,5 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
-module SantasSack where
+module SantasSack (fetchInput, fetchDescription, getInput, submitAnswer, putAnswer, module Advent.Types) where
 
 import Advent
 import Advent.Types
