@@ -1,4 +1,4 @@
-{-# LANGUAGE LambdaCase #-}
+{-# LANGUAGE OverloadedStrings #-}
 module SantasSack where
 
 import Advent
@@ -7,7 +7,8 @@ import Data.Text (Text)
 import qualified Data.Text as T
 import qualified Data.Text.IO as TIO
 import qualified Data.Map as M
-import Data.Map (Map, (!))
+import Data.Map (Map, (!?))
+import Data.Maybe (fromMaybe)
 
 
 getOpts :: IO AoCOpts
@@ -27,8 +28,8 @@ fetchDescription :: Integer -> IO ()
 fetchDescription d = do
   opts <- getOpts
   m <- runAoC_ opts $ AoCPrompt (mkDay_ d)
-  TIO.writeFile ("descr/day" <> show d <> "-part1.html") (m ! Part1)
-  TIO.writeFile ("descr/day" <> show d <> "-part2.html") (m ! Part2)
+  TIO.writeFile ("descr/day" <> show d <> "-part1.html") (fromMaybe "Part 1 not unlocked yet" (m !? Part1))
+  TIO.writeFile ("descr/day" <> show d <> "-part2.html") (fromMaybe "Part 2 not unlocked yet" (m !? Part2))
   return ()
 
 getInput :: Int -> IO String
