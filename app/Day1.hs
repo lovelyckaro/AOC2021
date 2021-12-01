@@ -2,10 +2,7 @@ module Main where
 import SantaLib
 
 part1 :: [Int] -> Int
-part1 [] = 0
-part1 [x] = 0
-part1 (x:y:ys) | x < y = 1 + part1 (y:ys)
-               | otherwise = part1 (y:ys)
+part1 xs = sum $ zipWith (\x y -> if x < y then 1 else 0) xs (tail xs)
 
 part2 :: [Int] -> Int
 part2 = part1 . windows
