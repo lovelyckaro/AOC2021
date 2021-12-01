@@ -33,7 +33,7 @@ fetchDescription d = do
   return ()
 
 getInput :: Int -> IO String
-getInput n = readFile ("input/day" <> show n)
+getInput n = readFile ("input/day" <> show n <> ".input")
 
 submitAnswer :: Integer -> Part -> IO ()
 submitAnswer day part = do
