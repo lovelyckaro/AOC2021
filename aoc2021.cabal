@@ -24,7 +24,7 @@ extra-source-files: CHANGELOG.md
 library
   hs-source-dirs: lib
   exposed-modules:
-    SantasSack
+    SantaLib
   other-modules:
   build-depends:
     base >= 4,
@@ -57,6 +57,7 @@ executable day1
       megaparsec,
       unordered-containers,
       text,
+      vector,
       aoc2021
     hs-source-dirs: app
     default-language: Haskell2010
@@ -68,6 +69,7 @@ executable day2
       megaparsec,
       unordered-containers,
       text,
+      vector,
       aoc2021
     hs-source-dirs: app
     default-language: Haskell2010
@@ -79,6 +81,7 @@ executable day3
       megaparsec,
       unordered-containers,
       text,
+      vector,
       aoc2021
     hs-source-dirs: app
     default-language: Haskell2010
@@ -90,6 +93,7 @@ executable day4
       megaparsec,
       unordered-containers,
       text,
+      vector,
       aoc2021
     hs-source-dirs: app
     default-language: Haskell2010
@@ -101,6 +105,7 @@ executable day5
       megaparsec,
       unordered-containers,
       text,
+      vector,
       aoc2021
     hs-source-dirs: app
     default-language: Haskell2010
@@ -112,6 +117,7 @@ executable day6
       megaparsec,
       unordered-containers,
       text,
+      vector,
       aoc2021
     hs-source-dirs: app
     default-language: Haskell2010
@@ -123,6 +129,7 @@ executable day7
       megaparsec,
       unordered-containers,
       text,
+      vector,
       aoc2021
     hs-source-dirs: app
     default-language: Haskell2010
@@ -134,6 +141,7 @@ executable day8
       megaparsec,
       unordered-containers,
       text,
+      vector,
       aoc2021
     hs-source-dirs: app
     default-language: Haskell2010
@@ -145,6 +153,7 @@ executable day9
       megaparsec,
       unordered-containers,
       text,
+      vector,
       aoc2021
     hs-source-dirs: app
     default-language: Haskell2010
@@ -156,6 +165,7 @@ executable day10
       megaparsec,
       unordered-containers,
       text,
+      vector,
       aoc2021
     hs-source-dirs: app
     default-language: Haskell2010
@@ -167,6 +177,7 @@ executable day11
       megaparsec,
       unordered-containers,
       text,
+      vector,
       aoc2021
     hs-source-dirs: app
     default-language: Haskell2010
@@ -178,6 +189,7 @@ executable day12
       megaparsec,
       unordered-containers,
       text,
+      vector,
       aoc2021
     hs-source-dirs: app
     default-language: Haskell2010
@@ -189,6 +201,7 @@ executable day13
       megaparsec,
       unordered-containers,
       text,
+      vector,
       aoc2021
     hs-source-dirs: app
     default-language: Haskell2010
@@ -200,6 +213,7 @@ executable day14
       megaparsec,
       unordered-containers,
       text,
+      vector,
       aoc2021
     hs-source-dirs: app
     default-language: Haskell2010
@@ -211,6 +225,7 @@ executable day15
       megaparsec,
       unordered-containers,
       text,
+      vector,
       aoc2021
     hs-source-dirs: app
     default-language: Haskell2010
@@ -222,6 +237,7 @@ executable day16
       megaparsec,
       unordered-containers,
       text,
+      vector,
       aoc2021
     hs-source-dirs: app
     default-language: Haskell2010
@@ -233,6 +249,7 @@ executable day17
       megaparsec,
       unordered-containers,
       text,
+      vector,
       aoc2021
     hs-source-dirs: app
     default-language: Haskell2010
@@ -244,6 +261,7 @@ executable day18
       megaparsec,
       unordered-containers,
       text,
+      vector,
       aoc2021
     hs-source-dirs: app
     default-language: Haskell2010
@@ -255,6 +273,7 @@ executable day19
       megaparsec,
       unordered-containers,
       text,
+      vector,
       aoc2021
     hs-source-dirs: app
     default-language: Haskell2010
@@ -266,6 +285,7 @@ executable day20
       megaparsec,
       unordered-containers,
       text,
+      vector,
       aoc2021
     hs-source-dirs: app
     default-language: Haskell2010
@@ -277,6 +297,7 @@ executable day21
       megaparsec,
       unordered-containers,
       text,
+      vector,
       aoc2021
     hs-source-dirs: app
     default-language: Haskell2010
@@ -288,6 +309,7 @@ executable day22
       megaparsec,
       unordered-containers,
       text,
+      vector,
       aoc2021
     hs-source-dirs: app
     default-language: Haskell2010
@@ -299,6 +321,7 @@ executable day23
       megaparsec,
       unordered-containers,
       text,
+      vector,
       aoc2021
     hs-source-dirs: app
     default-language: Haskell2010
@@ -310,6 +333,7 @@ executable day24
       megaparsec,
       unordered-containers,
       text,
+      vector,
       aoc2021
     hs-source-dirs: app
     default-language: Haskell2010
@@ -321,6 +345,7 @@ executable day25
       megaparsec,
       unordered-containers,
       text,
+      vector,
       aoc2021
     hs-source-dirs: app
     default-language: Haskell2010

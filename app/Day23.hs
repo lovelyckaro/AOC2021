@@ -1,5 +1,5 @@
 module Main where
-import SantasSack
+import SantaLib
 
 main :: IO ()
 main = do

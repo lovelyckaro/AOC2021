@@ -1,5 +1,5 @@
 module Main where
-import SantasSack
+import SantaLib
 
 part1 :: [Int] -> Int
 part1 [] = 0
