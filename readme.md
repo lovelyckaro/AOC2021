@@ -1,4 +1,4 @@
-# My solutions for Advent of Code 2021
+# 🎄 My solutions for Advent of Code 2021 🎄
 
 Run a day using `cabal run day[number]`, e.g. `cabal run day3`.
 
