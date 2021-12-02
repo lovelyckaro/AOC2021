@@ -1,9 +1,12 @@
 {-# LANGUAGE LambdaCase #-}
+{-# LANGUAGE OverloadedStrings #-}
 module Main where
 import SantaLib
 import Data.List
+import Data.Text (Text, breakOn, pack)
+import qualified Data.Text as T
 
-data Dir = Down Integer | Up Integer | Forward Integer
+data Instr = Down Integer | Up Integer | Forward Integer
   deriving Show
 
 data Pos1 = Pos1 {depth :: Integer, forwardDistance :: Integer}
@@ -15,16 +18,25 @@ instance Semigroup Pos1 where
 instance Monoid Pos1 where
   mempty = Pos1 0 0
 
-pDir :: String -> Dir
-pDir s | "forward" `isPrefixOf` s = Forward $ read (drop (length "forward" + 1) s)
-       | "up" `isPrefixOf` s = Up $ read (drop (length "up" + 1) s)
-       | "down" `isPrefixOf` s = Down $ read (drop (length "down" + 1) s)
-       | otherwise = error "something other than forward up or down"
+pInstr :: Text -> Instr
+pInstr s = dir len
+  where
+    (dirStr, lenStr) = breakOn " " s 
+    dir = pDir dirStr
+    len = readText lenStr
 
-pInp :: String -> [Dir]
-pInp = map pDir . lines
+pDir :: Text -> (Integer -> Instr)
+pDir s = case s of
+  "forward" -> Forward
+  "up" -> Up
+  "down" -> Down
+  _ -> error "did not match forward, up or down"
 
-toPos :: [Dir] -> Pos1
+
+pInp :: Text -> [Instr]
+pInp = map pInstr . T.lines
+
+toPos :: [Instr] -> Pos1
 toPos = foldMap $ \case
   Up n -> Pos1 (-n) 0
   Down n -> Pos1 n 0
@@ -33,12 +45,12 @@ toPos = foldMap $ \case
 part1 :: String -> Integer
 part1 inp = depth pos * forwardDistance pos
   where 
-    pos = toPos . pInp $ inp
+    pos = toPos . pInp . pack $ inp
 
 data Pos2 = Pos2 {aim :: Integer, d :: Integer, forward :: Integer}
   deriving Show
 
-toPos2 :: [Dir] -> Pos2
+toPos2 :: [Instr] -> Pos2
 toPos2 = foldl' fun (Pos2 0 0 0)
   where 
     fun (Pos2 aim depth forward) = \case
@@ -49,7 +61,7 @@ toPos2 = foldl' fun (Pos2 0 0 0)
 part2 :: String -> Integer
 part2 inp = d pos * forward pos
   where
-    pos = toPos2 . pInp $ inp
+    pos = toPos2 . pInp . pack $ inp
 
 main :: IO ()
 main = do
