@@ -1,5 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
-module SantaLib (fetchInput, fetchDescription, getInput, submitAnswer, putAnswer, module Advent.Types) where
+module SantaLib (fetchInput, fetchDescription, getInput, submitAnswer, putAnswer, readText, module Advent.Types) where
 
 import Advent
 import Advent.Types
@@ -10,6 +10,8 @@ import qualified Data.Map as M
 import Data.Map (Map, (!?))
 import Data.Maybe (fromMaybe)
 
+readText :: Read a => Text -> a
+readText = read . T.unpack
 
 getOpts :: IO AoCOpts
 getOpts = do
