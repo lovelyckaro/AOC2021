@@ -1,5 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
-module SantaLib (fetchInput, fetchDescription, getInput, submitAnswer, putAnswer, readText, module Advent.Types) where
+module SantaLib (fetchInput, fetchDescription, getInput, getExample, submitAnswer, putAnswer, readText, module Advent.Types) where
 
 import Advent
 import Advent.Types
@@ -7,7 +7,7 @@ import Data.Text (Text)
 import qualified Data.Text as T
 import qualified Data.Text.IO as TIO
 import qualified Data.Map as M
-import Data.Map (Map, (!?))
+import Data.Map (Map, (!?), (!))
 import Data.Maybe (fromMaybe)
 
 readText :: Read a => Text -> a
@@ -32,7 +32,13 @@ fetchDescription d = do
   m <- runAoC_ opts $ AoCPrompt (mkDay_ d)
   TIO.writeFile ("descr/day" <> show d <> "-part1.html") (fromMaybe "Part 1 not unlocked yet" (m !? Part1))
   TIO.writeFile ("descr/day" <> show d <> "-part2.html") (fromMaybe "Part 2 not unlocked yet" (m !? Part2))
+  -- hopefully get parse the example. It is usually the first thing within <pre><code> tags.
+  let (example, _) = T.breakOn "</code></pre>" (T.splitOn "<pre><code>" (m ! Part1) !! 1)
+  TIO.writeFile ("input/day" <> show d <> "-example.input") example
   return ()
+
+getExample :: Int -> IO String
+getExample n = readFile ("input/day" <> show n <> "-example.input")
 
 getInput :: Int -> IO String
 getInput n = readFile ("input/day" <> show n <> ".input")
