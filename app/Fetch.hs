@@ -10,6 +10,8 @@ main = do
     [dayStr] -> return $ read @Integer dayStr
     _ -> error "No day submitted"
   putStrLn $ "Fetching day " <> show day <> "..."
+  putStrLn "Fetching Description"
   fetchDescription day
+  putStrLn "Fetching input"
   fetchInput day
   putStrLn "Done!"
