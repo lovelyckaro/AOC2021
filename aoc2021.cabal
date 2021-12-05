@@ -30,7 +30,8 @@ library
     base >= 4,
     advent-of-code-api >= 0.2.8.0,
     containers,
-    text
+    text,
+    tagsoup
   default-language: Haskell2010
 
 executable fetch

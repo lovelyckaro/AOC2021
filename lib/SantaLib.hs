@@ -9,6 +9,7 @@ import qualified Data.Text.IO as TIO
 import qualified Data.Map as M
 import Data.Map (Map, (!?), (!))
 import Data.Maybe (fromMaybe)
+import Text.HTML.TagSoup
 
 readText :: Read a => Text -> a
 readText = read . T.unpack
@@ -33,9 +34,18 @@ fetchDescription d = do
   TIO.writeFile ("descr/day" <> show d <> "-part1.html") (fromMaybe "Part 1 not unlocked yet" (m !? Part1))
   TIO.writeFile ("descr/day" <> show d <> "-part2.html") (fromMaybe "Part 2 not unlocked yet" (m !? Part2))
   -- hopefully get parse the example. It is usually the first thing within <pre><code> tags.
-  let (example, _) = T.breakOn "</code></pre>" (T.splitOn "<pre><code>" (m ! Part1) !! 1)
+  let example = pExample (m ! Part1)
   TIO.writeFile ("input/day" <> show d <> "-example.input") example
   return ()
+
+pExample :: Text -> Text
+pExample html = fromTagText $ head goal
+  where
+    tags = parseTags html
+    beginsWithPre = partitions (isTagOpenName "pre") tags
+    followedByCode = partitions (isTagOpenName "code") <$> beginsWithPre
+    inners = head . head $ followedByCode
+    goal = filter isTagText inners
 
 getExample :: Int -> IO String
 getExample n = readFile ("input/day" <> show n <> "-example.input")
