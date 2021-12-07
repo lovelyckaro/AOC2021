@@ -29,9 +29,15 @@ cost2 n xs = sum $ seriesSum n <$> xs
     seriesSum n1 n2 = let diff = abs (n1 - n2) in
       diff * (diff + 1) `div` 2
 
--- nevermind being clever, lets brute force that shit
+mean :: [Int] -> Int
+mean xs = sum xs `div` length xs
+
+-- minimum is either ⌊mean xs⌋ or ⌈mean xs⌉
 part2 :: [Int] -> Int
-part2 xs = minimum $ (`cost2` xs) <$> [minimum xs .. maximum xs]
+part2 xs = 
+  min 
+  (cost2 (mean xs) xs) 
+  (cost2 (mean xs + 1) xs)
 
 main :: IO ()
 main = do
