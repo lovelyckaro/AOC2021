@@ -1,5 +1,5 @@
-{-# LANGUAGE OverloadedStrings #-}
-module SantaLib (fetchInput, fetchDescription, getInput, getExample, submitAnswer, putAnswer, readText, module Advent.Types) where
+{-# LANGUAGE OverloadedStrings, ScopedTypeVariables #-}
+module SantaLib (fetchInput, fetchDescription, getInput, getExample, submitAnswer, putAnswer, readText, connected, module Advent.Types) where
 
 import Advent
 import Advent.Types
@@ -10,21 +10,23 @@ import qualified Data.Map as M
 import Data.Map (Map, (!?), (!))
 import Data.Maybe (fromMaybe)
 import Text.HTML.TagSoup
-
-readText :: Read a => Text -> a
-readText = read . T.unpack
+import qualified Data.Set as S
+import Data.Set (Set)
+import Data.Vector (Vector)
+import qualified Data.Vector as V
+import Data.Foldable
 
 getOpts :: IO AoCOpts
 getOpts = do
   env <- readFile ".env"
   let ls = lines env
   let (year, key) = (read $ head ls, ls !! 1)
-  return $ defaultAoCOpts year key
+  return $ defaultAoCOpts year key
 
 fetchInput :: Integer -> IO ()
 fetchInput d = do
   opts <- getOpts
-  inp <- runAoC_ opts $ AoCInput (mkDay_ d)
+  inp <- runAoC_ opts $ AoCInput (mkDay_ d)
   TIO.writeFile ("input/day" <> show d <> ".input") inp
 
 fetchDescription :: Integer -> IO ()
@@ -70,3 +72,18 @@ putAnswer day part = writeFile fp
     fp = case part of
       Part1 -> "answer/day" <> show day <> "-part1"
       Part2 -> "answer/day" <> show day <> "-part2"
+
+-- Common, useful algorithms:
+readText :: Read a => Text -> a
+readText = read . T.unpack
+
+-- | Find connected subgraph given initial point and function handling neighbors
+-- using breadth first search
+connected :: forall f point. (Foldable f, Ord point) => (point -> f point) -> point -> [point]
+connected neighbors initPoint = go neighbors (V.singleton initPoint) S.empty
+  where
+    go :: (point -> f point) -> Vector point -> Set point -> [point]
+    go neighbors queue visited 
+      | null queue = toList visited
+      | otherwise = go neighbors (V.tail queue <> unvisitedNeighbors) (S.insert (V.head queue) visited)
+        where unvisitedNeighbors = V.fromList $ filter (not . (`S.member` visited)) (toList (neighbors (V.head queue)))
