@@ -94,5 +94,5 @@ main = do
         Right lis -> lis
   let ans1 = part1 ls
   let ans2 = part2 ls
-  putAnswer 5 Part1 (show $ part1 ls)
-  putAnswer 5 Part2 (show $ part2 ls)
+  putAnswer 5 Part1 (part1 ls)
+  putAnswer 5 Part2 (part2 ls)

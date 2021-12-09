@@ -31,7 +31,6 @@ determineBasin matrix = connected neighbors
                 && matrix ! r ! c /= 9
                 && matrix ! r ! c > matrix ! row ! col
 
-
 badness :: Vector (Vector Int) -> (Int, Int) -> Int
 badness  vs (row, col) = vs ! row ! col + 1
 
@@ -47,7 +46,7 @@ part1 s = sum badnesses
     badnesses = map (badness matrix) lowPoints
 
 part2 :: String -> Int
-part2 s = product $ map length $ take 3 sortedBasins
+part2 s = sortedBasins |> take 3 |> map length |> product
   where
     matrix = pInp s
     ps = points matrix
@@ -59,5 +58,5 @@ main :: IO ()
 main = do
   inp <- getInput 9
   ex <- getExample 9
-  putAnswer 9 Part1 (show $ part1 inp) 
-  putAnswer 9 Part2 (show $ part2 inp)
+  putAnswer 9 Part1 (part1 inp) 
+  putAnswer 9 Part2 (part2 inp)

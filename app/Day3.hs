@@ -23,10 +23,10 @@ leastCommon :: Bits a => Int -> [a] -> a
 leastCommon n xs = complementBit (mostCommon n xs) n
 
 gamma :: [Int] -> Int
-gamma xs = sum [mostCommon bit xs | bit <- [0..11]]
+gamma xs = sum [mostCommon bit xs | bit <- [0..11]]
 
 epsilon :: [Int] -> Int
-epsilon xs = sum [leastCommon bit xs | bit <- [0..11]]
+epsilon xs = sum [leastCommon bit xs | bit <- [0..11]]
 
 
 part1 :: String -> Int
@@ -57,8 +57,8 @@ part2 inp = co2 xs * oxygen xs
 main :: IO ()
 main = do
   inp <- getInput 3
-  putAnswer 3 Part1 (show $ part1 inp)
-  putAnswer 3 Part2 (show $ part2 inp)  
+  putAnswer 3 Part1 (part1 inp)
+  putAnswer 3 Part2 (part2 inp)  
 
 test :: [Int]
 test = [0b00100,

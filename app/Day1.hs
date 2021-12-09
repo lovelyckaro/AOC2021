@@ -25,5 +25,5 @@ test = [199,
 main :: IO ()
 main = do
   inp <- getInput 1
-  putAnswer 1 Part1 (show $ part1 (read <$> lines inp))
-  putAnswer 1 Part2 (show $ part2 (read <$> lines inp))
+  putAnswer 1 Part1 (part1 (read <$> lines inp))
+  putAnswer 1 Part2 (part2 (read <$> lines inp))

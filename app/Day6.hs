@@ -10,7 +10,7 @@ type School = IntMap Amount
 tickSchool :: School -> School
 tickSchool = IM.foldlWithKey age IM.empty
   where
-    age im 0 m = IM.insertWith (+) 8 m $ IM.insertWith (+) 6 m im
+    age im 0 m = IM.insertWith (+) 8 m $ IM.insertWith (+) 6 m im
     age im n m = IM.insertWith (+) (n-1) m im
 
 pInp :: String -> School
@@ -34,5 +34,5 @@ part2 s = sum (iterate tickSchool initSchool !! 256)
 main :: IO ()
 main = do
   inp <- getInput 6
-  putAnswer 6 Part1 (show $ part1 inp)
-  putAnswer 6 Part2 (show $ part2 inp)
+  putAnswer 6 Part1 (part1 inp)
+  putAnswer 6 Part2 (part2 inp)

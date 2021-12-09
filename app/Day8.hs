@@ -6,7 +6,7 @@ import Data.Bifunctor
 import Data.Map (Map, (!?), (!))
 import qualified Data.Map as M
 
-data Segment = Top | TopRight | TopLeft | Middle | Bottom | BottomRight | BottomLeft
+data Segment = Top | TopRight | TopLeft | Middle | Bottom | BottomRight | BottomLeft
   deriving (Show, Eq, Ord)
 
 type Key = Map Char Segment
@@ -52,16 +52,16 @@ determineBottom sets = (bottom, Bottom)
     four = getFour sets
     seven = getSeven sets
     combined = S.union four seven
-    bottom = S.elemAt 0 $ head $ filter (\s -> S.size s == 1) $ map (S.\\ combined) sets
+    bottom = S.elemAt 0 $ head $ filter (\s -> S.size s == 1) $ map (S.\\ combined) sets
 
 determineMiddle :: [Set Char] -> (Char, Segment)
 determineMiddle sets = (middle, Middle)
   where
-    threeWithoutMiddle = getOne sets `S.union` S.fromList [fst s | s <- [determineBottom sets, determineTop sets]]
-    middle = S.elemAt 0 $ head $ filter (\s -> S.size s == 1) $ map (S.\\ threeWithoutMiddle) sets
+    threeWithoutMiddle = getOne sets `S.union` S.fromList [fst s | s <- [determineBottom sets, determineTop sets]]
+    middle = S.elemAt 0 $ head $ filter (\s -> S.size s == 1) $ map (S.\\ threeWithoutMiddle) sets
 
 getThree :: [Set Char] -> Set Char
-getThree sets = getOne sets `S.union` S.fromList [c | (c,_) <- [determineTop sets, determineBottom sets, determineMiddle sets]]
+getThree sets = getOne sets `S.union` S.fromList [c | (c,_) <- [determineTop sets, determineBottom sets, determineMiddle sets]]
 
 determineBottomLeft :: [Set Char] -> (Char, Segment)
 determineBottomLeft sets = (bottomLeft, BottomLeft)
@@ -69,31 +69,31 @@ determineBottomLeft sets = (bottomLeft, BottomLeft)
     (topLeft, _) = determineTopLeft sets
     nine = S.insert topLeft $ getThree sets 
     eight = getEight sets
-    bottomLeft = S.elemAt 0 $ eight S.\\ nine
+    bottomLeft = S.elemAt 0 $ eight S.\\ nine
 
 determineTopRight :: [Set Char] -> (Char, Segment)
 determineTopRight sets = (topRight, TopRight)
   where
     (bottomRight, _) = determineBottomRight sets
     one = getOne sets
-    topRight = S.elemAt 0 $ S.delete bottomRight one
+    topRight = S.elemAt 0 $ S.delete bottomRight one
 
 determineBottomRight :: [Set Char] -> (Char, Segment)
 determineBottomRight sets = (bottomRight, BottomRight)
   where
     (topLeft,_) = determineTopLeft sets
-    nine = S.insert topLeft $ getThree sets
+    nine = S.insert topLeft $ getThree sets
     (middle, _) = determineMiddle sets
-    six = head $ filter (\s -> S.size s == 6 && s /= nine && S.member middle s) sets
+    six = head $ filter (\s -> S.size s == 6 && s /= nine && S.member middle s) sets
     one = getOne sets
-    bottomRight = S.elemAt 0 $ six `S.intersection` one
+    bottomRight = S.elemAt 0 $ six `S.intersection` one
 
 determineTopLeft :: [Set Char] -> (Char, Segment)
 determineTopLeft sets = (topLeft, TopLeft)
   where
     three = getThree sets
     four = getFour sets
-    topLeft = S.elemAt 0 $ four S.\\ three
+    topLeft = S.elemAt 0 $ four S.\\ three
 
 determineAll :: [Set Char] -> Key
 determineAll sets = M.fromList 
@@ -126,7 +126,7 @@ pInp str = sets
     sets = map (bimap (map S.fromList . words) (map S.fromList . tail . words)) tups
 
 is1478 :: Set Char -> Bool
-is1478 s = size == 2 || size == 7 || size == 4 || size == 3
+is1478 s = size == 2 || size == 7 || size == 4 || size == 3
   where size = S.size s
 
 outputs :: [([Set Char], [Set Char])] -> [Set Char]
@@ -136,13 +136,13 @@ part1 :: String -> Int
 part1 = length . filter is1478 . outputs . pInp
 
 part2 :: String -> Int
-part2 inp = sum $ map translateNum tups
+part2 inp = sum $ map translateNum tups
   where
     tups = pInp inp
 
 main :: IO ()
 main = do
   inp <- getInput 8
-  putAnswer 8 Part1 (show (part1 inp))
-  putAnswer 8 Part2 (show (part2 inp))
+  putAnswer 8 Part1 (part1 inp)
+  putAnswer 8 Part2 (part2 inp)
 

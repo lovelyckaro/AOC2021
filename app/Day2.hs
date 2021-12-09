@@ -80,5 +80,5 @@ main = do
   instrs <- case parse pInp "input" inp of
     Left error -> putStrLn (errorBundlePretty error) >> return []
     Right value -> return value
-  putAnswer 2 Part1 (show $ part1 instrs)
-  putAnswer 2 Part2 (show $ part2 instrs)
+  putAnswer 2 Part1 (part1 instrs)
+  putAnswer 2 Part2 (part2 instrs)

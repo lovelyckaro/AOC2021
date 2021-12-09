@@ -1,20 +1,35 @@
-{-# LANGUAGE OverloadedStrings, ScopedTypeVariables #-}
-module SantaLib (fetchInput, fetchDescription, getInput, getExample, submitAnswer, putAnswer, readText, connected, module Advent.Types) where
+{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE ScopedTypeVariables #-}
+
+module SantaLib
+  ( fetchInput,
+    fetchDescription,
+    getInput,
+    getExample,
+    submitAnswer,
+    putAnswer,
+    readText,
+    connected,
+    (|>),
+    module Advent.Types,
+  )
+where
 
 import Advent
 import Advent.Types
+import Data.Foldable
+import Data.Function ((&))
+import Data.Map (Map, (!), (!?))
+import qualified Data.Map as M
+import Data.Maybe (fromMaybe)
+import Data.Set (Set)
+import qualified Data.Set as S
 import Data.Text (Text)
 import qualified Data.Text as T
 import qualified Data.Text.IO as TIO
-import qualified Data.Map as M
-import Data.Map (Map, (!?), (!))
-import Data.Maybe (fromMaybe)
-import Text.HTML.TagSoup
-import qualified Data.Set as S
-import Data.Set (Set)
 import Data.Vector (Vector)
 import qualified Data.Vector as V
-import Data.Foldable
+import Text.HTML.TagSoup
 
 getOpts :: IO AoCOpts
 getOpts = do
@@ -59,16 +74,16 @@ submitAnswer :: Integer -> Part -> IO ()
 submitAnswer day part = do
   opts <- getOpts
   fp <- case part of
-      Part1 -> return ("answer/day" <> show day <> "-part1")
-      Part2 -> return ("answer/day" <> show day <> "-part2")
+    Part1 -> return ("answer/day" <> show day <> "-part1")
+    Part2 -> return ("answer/day" <> show day <> "-part2")
   ans <- readFile fp
   (response, result) <- runAoC_ opts (AoCSubmit (mkDay_ day) part ans)
   TIO.putStrLn response
   print result
 
-putAnswer :: Integer -> Part -> String -> IO ()
-putAnswer day part = writeFile fp
-  where 
+putAnswer :: Show a => Integer -> Part -> a -> IO ()
+putAnswer day part = writeFile fp . show
+  where
     fp = case part of
       Part1 -> "answer/day" <> show day <> "-part1"
       Part2 -> "answer/day" <> show day <> "-part2"
@@ -83,7 +98,18 @@ connected :: forall f point. (Foldable f, Ord point) => (point -> f point) -> po
 connected neighbors initPoint = go neighbors (V.singleton initPoint) S.empty
   where
     go :: (point -> f point) -> Vector point -> Set point -> [point]
-    go neighbors queue visited 
+    go neighbors queue visited
       | null queue = toList visited
-      | otherwise = go neighbors (V.tail queue <> unvisitedNeighbors) (S.insert (V.head queue) visited)
-        where unvisitedNeighbors = V.fromList $ filter (not . (`S.member` visited)) (toList (neighbors (V.head queue)))
+      | otherwise = go neighbors (rest <> unvisitedNeighbors) (S.insert current visited)
+      where
+        current = V.head queue
+        rest = V.tail queue
+        unvisitedNeighbors = current |> neighbors |> toVector |> V.filter (\p -> not (S.member p visited))
+
+toVector :: (Foldable f) => f a -> Vector a
+toVector = V.fromList . toList
+
+(|>) :: a -> (a -> b) -> b
+(|>) = (&)
+
+infixl 1 |>

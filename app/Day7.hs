@@ -10,7 +10,7 @@ pInp :: String -> [Int]
 pInp = map (read . T.unpack) . T.splitOn "," . T.pack
 
 cost1 :: Int -> [Int] -> Int
-cost1 n xs = sum $ (\x -> abs (x - n)) <$> xs
+cost1 n xs = sum $ (\x -> abs (x - n)) <$> xs
 
 median :: [Int] -> Int
 median xs | even len = (ss !! (len `div` 2) + ss !! (len `div` 2)) `div` 2
@@ -23,7 +23,7 @@ part1 :: [Int] -> Int
 part1 xs = cost1 (median xs) xs
 
 cost2 :: Int -> [Int] -> Int
-cost2 n xs = sum $ seriesSum n <$> xs
+cost2 n xs = sum $ seriesSum n <$> xs
   where
     seriesSum :: Int -> Int -> Int
     seriesSum n1 n2 = let diff = abs (n1 - n2) in
@@ -43,6 +43,6 @@ main :: IO ()
 main = do
   inp <- getInput 7
   let nums = pInp inp
-  putAnswer 7 Part1 (show $ part1 nums)
-  putAnswer 7 Part2 (show $ part2 nums)
+  putAnswer 7 Part1 (part1 nums)
+  putAnswer 7 Part2 (part2 nums)
 

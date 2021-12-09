@@ -105,8 +105,8 @@ main = do
   case parse pInp "input" inp of
     Left error -> putStrLn (errorBundlePretty error)
     Right (nums, boards) -> do
-      putAnswer 4 Part1 (show $ part1 nums boards)
-      putAnswer 4 Part2 (show $ part2 nums boards)
+      putAnswer 4 Part1 (part1 nums boards)
+      putAnswer 4 Part2 (part2 nums boards)
 
 test = unlines [
   "7,4,9,5,11,17,23,2,0,14,21,24,10,16,13,6,15,25,12,22,18,20,8,19,3,26,1",
