@@ -3,11 +3,9 @@ module Main where
 import SantaLib
 import Data.Vector (Vector, (!?), (!))
 import qualified Data.Vector as V
-import Data.Maybe
 import Data.Set (Set)
 import qualified Data.Set as S
 import Data.List
-import Data.Foldable
 
 pInp :: String -> Vector (Vector Int)
 pInp = V.fromList . map (V.fromList . map (read . (:[]))) . lines
@@ -16,18 +14,19 @@ isLowPoint :: Vector (Vector Int) -> (Int, Int) -> Bool
 isLowPoint vs (row, col) = length (filter (> this) neighbors) == neighborAmount
   where
     this = vs ! row ! col
-    neighbors = catMaybes
-      [ vs !? (row + 1) >>= (!? col)
-      , vs !? (row - 1) >>= (!? col)
-      , vs !? row >>= (!? (col - 1))
-      , vs !? row >>= (!? (col + 1))]
+    neighbors = [vs ! r ! c | (r,c) <- possibleNeighbors, checkBounds vs (r,c)]
+    possibleNeighbors = [(row, col + 1), (row, col - 1), (row + 1, col), (row - 1, col)]
     neighborAmount = length neighbors
+
+checkBounds :: Vector (Vector a) -> (Int, Int) -> Bool
+checkBounds matrix (row, col) = row >= 0 && col >= 0 && col < width && row < height 
+  where (height, width) = (length matrix, length (V.head matrix))
 
 determineBasin :: Vector (Vector Int) -> (Int, Int) -> [(Int, Int)]
 determineBasin matrix = connected neighbors
   where
     neighbors (row, col) = filter valid [(row, col + 1), (row, col - 1), (row + 1, col), (row - 1, col)]
-      where valid (r,c) = r >= 0 && c >= 0 && r < length matrix && c < length (V.head matrix)
+      where valid (r,c) = checkBounds matrix (r,c)
                 && matrix ! r ! c /= 9
                 && matrix ! r ! c > matrix ! row ! col
 
