@@ -10,6 +10,7 @@ module SantaLib
     putAnswer,
     readText,
     connected,
+    toVector,
     (|>),
     module Advent.Types,
   )
