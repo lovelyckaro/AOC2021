@@ -1,12 +1,10 @@
 {-# LANGUAGE LambdaCase #-}
 module Main where
 import SantaLib
-import Data.Map (Map, (!?))
+import Data.Map (Map)
 import qualified Data.Map as M
 import Data.List.Split ( splitOn )
 import Data.Char ( isLower )
-import Data.Vector (Vector)
-import qualified Data.Vector as V
 import Data.Set (Set)
 import qualified Data.Set as S
 import Control.Monad ( guard )
