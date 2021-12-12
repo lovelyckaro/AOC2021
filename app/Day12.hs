@@ -1,14 +1,15 @@
+{-# LANGUAGE LambdaCase #-}
 module Main where
 import SantaLib
 import Data.Map (Map, (!?))
 import qualified Data.Map as M
-import Data.List.Split
-import Data.Char
+import Data.List.Split ( splitOn )
+import Data.Char ( isLower )
 import Data.Vector (Vector)
 import qualified Data.Vector as V
 import Data.Set (Set)
 import qualified Data.Set as S
-import Control.Monad
+import Control.Monad ( guard )
 
 data Node = Lower String | Upper String | Start | End
   deriving (Ord, Eq, Show)
@@ -20,33 +21,15 @@ pInp :: String -> Graph
 pInp inp = foldr (\(start, end) -> M.insertWith (<>) end [start] . M.insertWith (<>) start [end]) M.empty ls
   where
     ls = lines inp |> map pLine
+    pLine l = let [start, end] = splitOn "-" l in (pNode start, pNode end)
+    pNode = \case
+      "start" -> Start
+      "end" -> End
+      xs | head xs |> isLower -> Lower xs
+         | otherwise -> Upper xs
 
-pLine :: [Char] -> (Node, Node)
-pLine l = case splitOn "-" l of
-  [start, end] -> (pNode start, pNode end)
-  _ -> undefined
-
-pNode :: [Char] -> Node
-pNode "start" = Start
-pNode "end" = End
-pNode xs | head xs |> isLower = Lower xs
-         | otherwise = Upper xs
-
-findAllPaths :: Graph -> [Path]
-findAllPaths g = dfs [Start] (S.singleton Start)
-  where
-    dfs [] _ = undefined
-    dfs (latest : curPath) visiting = do
-      outNode <- M.findWithDefault [] latest g
-      guard (not $ S.member outNode visiting) 
-      case outNode of
-        Lower s -> dfs (outNode : latest : curPath) (S.insert outNode visiting)
-        Upper s -> dfs (outNode : latest : curPath) visiting
-        Start -> undefined
-        End -> return (outNode : latest : curPath)
-
-findAllPaths2 :: Graph -> [Path]
-findAllPaths2 g = dfs [Start] (S.singleton Start) True
+findAllPaths :: Bool -> Graph -> [Path]
+findAllPaths canGoAgain g = dfs [Start] (S.singleton Start) canGoAgain
   where
     dfs [] _ _ = undefined
     dfs (latest : curPath) visiting canGoAgain = do
@@ -60,10 +43,10 @@ findAllPaths2 g = dfs [Start] (S.singleton Start) True
         End -> return (outNode : latest : curPath)
 
 part1 :: String -> Int
-part1 inp = inp |> pInp |> findAllPaths |> length
+part1 inp = inp |> pInp |> findAllPaths False |> length
 
 part2 :: String -> Int
-part2 inp = inp |> pInp |> findAllPaths2 |> length
+part2 inp = inp |> pInp |> findAllPaths True |> length
 
 main :: IO ()
 main = do
