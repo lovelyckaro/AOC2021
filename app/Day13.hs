@@ -15,24 +15,16 @@ pInp :: String -> (Set Point, [FoldInstr])
 pInp inp = (points |> lines |> map (splitOn ",") |> map toPoint |> S.fromList, folds |> lines |> map toFoldInstr)
   where
     [points, folds] = splitOn "\n\n" inp
-    toFoldInstr str = case (stripPrefix "fold along x=" str, stripPrefix "fold along y=" str) of
-      (Nothing, Nothing) -> error $ "Could not parse" <> str
-      (Just x, Nothing) -> AlongX (read x)
-      (Nothing, Just y) -> AlongY (read y)
-      (Just _, Just _) -> error "unreachable"
+    toFoldInstr str = case stripPrefix "fold along " str of
+      Just ('x' : '=' : num) -> AlongX (read num)
+      Just ('y' : '=' : num) -> AlongY (read num)
+      _ -> undefined
     toPoint [row, col] = (read row, read col)
     toPoint _ = undefined
 
 foldAlong :: FoldInstr -> Set Point -> Set Point
-foldAlong (AlongX n) s = (s S.\\ toBeFolded) `S.union` folded
-  where
-    toBeFolded = S.filter (\(x, y) -> x > n) s
-    folded :: Set Point
-    folded = S.map (\(x, y) -> (n - (x - n), y)) toBeFolded
-foldAlong (AlongY n) s = (s S.\\ toBeFolded) `S.union` folded
-  where
-    toBeFolded = S.filter (\(x, y) -> y > n) s
-    folded = S.map (\(x, y) -> (x, n - (y - n))) toBeFolded
+foldAlong (AlongX n) = S.map (\(x, y) -> if x > n then (n - (x - n), y) else (x, y))
+foldAlong (AlongY n) = S.map (\(x, y) -> if y > n then (x, n - (y - n)) else (x, y))
 
 part1 :: String -> Int
 part1 inp = points |> foldAlong (head foldInstrs) |> S.size
@@ -47,7 +39,7 @@ part2 inp = foldl' (flip foldAlong) points foldInstrs |> prettify
 prettify :: Set Point -> String
 prettify s = unlines ls
   where
-    ls = map (\y -> map (\x -> if S.member (x, y) s then '#' else '.') [minX .. maxX]) [minY .. maxY]
+    ls = map (\y -> map (\x -> if S.member (x, y) s then '█' else '░') [minX .. maxX]) [minY .. maxY]
     minX = S.findMin (S.map fst s)
     minY = S.findMin (S.map snd s)
     maxX = S.findMax (S.map fst s)
