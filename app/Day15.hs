@@ -1,24 +1,25 @@
 module Main where
-import SantaLib
+
+import Control.Monad
+import Data.Foldable
+import Data.Graph.Inductive hiding (neighbors)
+import Data.Maybe
 import Data.Vector (Vector, (!))
 import qualified Data.Vector as V
-import Data.Graph.Inductive hiding (neighbors)
-import Data.Graph.Inductive.Query.SP
-import Control.Monad
-import Data.Maybe
-import Data.Foldable
+import SantaLib
 
 pInp :: String -> Vector (Vector Int)
-pInp inp = inp |> lines |> map (map (:[])) |> map (map read) |> map V.fromList |> V.fromList
+pInp inp = inp |> lines |> map (map (: [])) |> map (map read) |> map V.fromList |> V.fromList
 
-type Point = (Int,Int)
+type Point = (Int, Int)
+
 type Cost = Int
 
 (+|) :: Vector (Vector Int) -> Vector (Vector Int) -> Vector (Vector Int)
 (+|) = V.zipWith (<>)
 
 enlargenMatrix :: Vector (Vector Int) -> Vector (Vector Int)
-enlargenMatrix tile = foldl' (<>) V.empty [row n | n <- [0..4]]
+enlargenMatrix tile = foldl' (<>) V.empty [row n | n <- [0 .. 4]]
   where
     succ = V.map (V.map (\x -> if x + 1 > 9 then 1 else x + 1))
     tiles = iterate succ tile
@@ -26,23 +27,15 @@ enlargenMatrix tile = foldl' (<>) V.empty [row n | n <- [0..4]]
     row n = foldl' (+|) (V.replicate rows V.empty) $ take 5 $ drop n tiles
 
 toGraph :: Vector (Vector Int) -> Gr Point Cost
-toGraph matrix = mkGraph nodes edges
+toGraph matrix = graph
   where
+    (graph, nodemap) = mkMapGraph ps edges
     (height, width) = (length matrix, length $ V.head matrix)
-    ps = [(row, col) | row <- [0..height - 1], col <- [0..width - 1]]
-    nodes = zip [0..] ps
-    edges = do
-      (startNode, point) <- nodes
-      endPoint <- neighbors point
-      guard (checkBounds matrix endPoint)
-      let (row, col) = endPoint
-      let edge = (startNode, toNode endPoint, matrix ! row ! col)
-      return edge
-    toNode :: Point -> Node
-    toNode (row, col) = row * width + col
+    ps = [(row, col) | row <- [0 .. height - 1], col <- [0 .. width - 1]]
+    edges = [(start, end, matrix ! row ! col) | start <- ps, end@(row, col) <- neighbors start, checkBounds matrix end]
 
 checkBounds :: Vector (Vector Int) -> Point -> Bool
-checkBounds matrix (row,col) = row >= 0 && col >= 0 && row < length matrix && col < length (V.head matrix)
+checkBounds matrix (row, col) = row >= 0 && col >= 0 && row < length matrix && col < length (V.head matrix)
 
 neighbors :: Point -> [Point]
 neighbors (row, col) = [(row, col + 1), (row, col - 1), (row - 1, col), (row + 1, col)]
