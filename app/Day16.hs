@@ -10,10 +10,7 @@ data Op = Sum | Product | Minimum | Maximum | GreaterThan | LessThan | EqualTo
   deriving Show
 
 readN :: Int -> State String String
-readN n = do
-  xs <- get
-  put (drop n xs)
-  return (take n xs)
+readN n = state (splitAt n)
 
 pPacket :: State String Packet
 pPacket = do
