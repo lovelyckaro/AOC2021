@@ -284,7 +284,8 @@ executable day19
       unordered-containers,
       text,
       vector,
-      aoc2021
+      aoc2021,
+      split
     hs-source-dirs: app
     default-language: Haskell2010
 executable day20
