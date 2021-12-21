@@ -14,10 +14,10 @@ data Dice = Dice {dice :: [Int], rollCounter :: Int}
 
 instance Show Dice where
   show (Dice [] counter) = "Dice which has run out of rolls"
-  show (Dice (d:rest) counter) = unlines ["Dice:", "next-roll: " <> show d, "counter: " <> show counter]
+  show (Dice (d : rest) counter) = unlines ["Dice:", "next-roll: " <> show d, "counter: " <> show counter]
 
 die :: Dice
-die = Dice (concat $ repeat [1..100]) 0
+die = Dice (concat $ repeat [1 .. 100]) 0
 
 data GameState = GameState {player :: Player, p1score, p1pos, p2score, p2pos :: Int}
   deriving (Show, Eq, Ord)
@@ -42,23 +42,23 @@ roll :: State Dice Int
 roll = do
   d <- gets dice
   modify (\(Dice d c) -> Dice (drop 3 d) (c + 3))
-  return $ sum $ take 3 d 
+  return $ sum $ take 3 d
 
 play1 :: GameState -> State Dice GameState
 play1 gs@GameState {..}
   | p1score >= 1000 = return gs
   | p2score >= 1000 = return gs
   | otherwise = do
-      r <- roll
-      case player of
-        Player1 -> play1 $ GameState Player2 (p1score + move p1pos r) (move p1pos r) p2score p2pos
-        Player2 -> play1 $ GameState Player1 p1score p1pos (p2score + move p2pos r) (move p2pos r)
+    r <- roll
+    case player of
+      Player1 -> play1 $ GameState Player2 (p1score + move p1pos r) (move p1pos r) p2score p2pos
+      Player2 -> play1 $ GameState Player1 p1score p1pos (p2score + move p2pos r) (move p2pos r)
 
 part1 :: String -> Int
 part1 inp = min p1score p2score * rollCounter
   where
     init = pInp inp
-    (GameState {..}, Dice{..}) = runState (play1 init) die
+    (GameState {..}, Dice {..}) = runState (play1 init) die
 
 play2 :: GameState -> State (Map GameState (Int, Int)) (Int, Int)
 play2 gs@GameState {..}
@@ -83,7 +83,6 @@ part2 inp = max p1wins p2wins
   where
     init = pInp inp
     (p1wins, p2wins) = evalState (play2 init) M.empty
-
 
 main :: IO ()
 main = do

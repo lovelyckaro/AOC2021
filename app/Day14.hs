@@ -1,17 +1,18 @@
 module Main where
-import SantaLib
+
+import Data.List
+import Data.List.Split
 import Data.Map (Map, (!?))
 import qualified Data.Map as M
-import Data.List.Split
-import Data.List
+import SantaLib
 
 type Polymer = Map String Integer
 
 pInp :: String -> (Polymer, Map String Char, Char)
-pInp inp = (polymer, mappings |> lines |> map toTup |> M.fromList, last startPoint )
+pInp inp = (polymer, mappings |> lines |> map toTup |> M.fromList, last startPoint)
   where
     [startPoint, mappings] = splitOn "\n\n" inp
-    polymer = M.fromListWith (+) $ zip (zipWith (\a b -> [a,b]) startPoint (tail startPoint)) (repeat 1)
+    polymer = M.fromListWith (+) $ zip (zipWith (\a b -> [a, b]) startPoint (tail startPoint)) (repeat 1)
     toTup line = let [have, get] = splitOn " -> " line in (have, head get)
 
 tick :: Map String Char -> Polymer -> Polymer
@@ -26,7 +27,7 @@ toCharCount :: Polymer -> Map Char Integer
 toCharCount = M.foldrWithKey go M.empty
   where
     go :: String -> Integer -> Map Char Integer -> Map Char Integer
-    go [a,b] amount m = m |> M.insertWith (+) a amount --  |> M.insertWith (+) b amount
+    go [a, b] amount m = m |> M.insertWith (+) a amount --  |> M.insertWith (+) b amount
     go _ _ _ = undefined
 
 part1 :: String -> Integer
@@ -35,7 +36,6 @@ part1 inp = maximum charCount - minimum charCount
     (polymer, mapping, lastChar) = pInp inp
     tenthIter = iterate (tick mapping) polymer !! 10
     charCount = M.insertWith (+) lastChar 1 $ toCharCount tenthIter
-
 
 part2 :: String -> Integer
 part2 inp = maximum charCount - minimum charCount

@@ -12,8 +12,8 @@ import Text.Megaparsec
     errorBundlePretty,
     many,
     parse,
+    parseTest,
     (<|>),
-    parseTest
   )
 import Text.Megaparsec.Char (newline, space, string)
 import Text.Megaparsec.Char.Lexer (decimal)

@@ -1,24 +1,31 @@
 {-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE RecordWildCards #-}
+
 module Main where
-import SantaLib
+
+import Data.Foldable
+import Data.Ord
 import Data.Set (Set)
 import qualified Data.Set as S
 import Data.Vector (Vector)
 import qualified Data.Vector as V
-import Data.Foldable
-import Data.Ord
+import SantaLib
+
 data Pixel = Dark | Light
   deriving (Show, Eq)
+
 type Point = (Int, Int)
+
 type ImageEnhancer = Vector Pixel
+
 data Bounds = Bounds {minrow, maxrow, mincol, maxcol :: Int}
-  deriving Show
+  deriving (Show)
 
 outsideBounds :: Bounds -> Point -> Bool
 outsideBounds Bounds {..} (row, col) = row < minrow || row > maxrow || col < mincol || col > maxcol
-data Image = Image {image :: Set Point, bounds :: Bounds, defaultOutside :: Pixel }
-  deriving Show
+
+data Image = Image {image :: Set Point, bounds :: Bounds, defaultOutside :: Pixel}
+  deriving (Show)
 
 opposite :: Pixel -> Pixel
 opposite = \case
@@ -31,7 +38,7 @@ pPixel '.' = Dark
 pPixel _ = undefined
 
 pInp :: String -> (ImageEnhancer, Image)
-pInp string = (imageEnhancer,Image s bounds Dark)
+pInp string = (imageEnhancer, Image s bounds Dark)
   where
     ls = lines string
     imageEnhancer = ls |> head |> map pPixel |> V.fromList
@@ -45,20 +52,21 @@ pInp string = (imageEnhancer,Image s bounds Dark)
 
 toInt :: [Pixel] -> Int
 toInt [] = 0
-toInt (Dark:rest) = toInt rest
-toInt (Light:rest) = 2^length rest + toInt rest
+toInt (Dark : rest) = toInt rest
+toInt (Light : rest) = 2 ^ length rest + toInt rest
 
 readNeighbors :: Image -> Point -> Int
-readNeighbors (Image s bounds outside) (row,col) = toInt [lookup (row',col') s | row' <- [row - 1, row, row + 1], col' <- [col - 1, col, col + 1]]
+readNeighbors (Image s bounds outside) (row, col) = toInt [lookup (row', col') s | row' <- [row - 1, row, row + 1], col' <- [col - 1, col, col + 1]]
   where
-    lookup p s | outsideBounds bounds p = outside
-               | S.member p s = Light
-               | otherwise    = Dark
+    lookup p s
+      | outsideBounds bounds p = outside
+      | S.member p s = Light
+      | otherwise = Dark
 
 tick :: ImageEnhancer -> Image -> Image
 tick imageEnhancer (Image image Bounds {..} outside) = Image (foldr handlePoint S.empty ps) (Bounds (minrow - 1) (maxrow + 1) (mincol - 1) (maxcol + 1)) (opposite outside)
   where
-    ps = [(row,col) | row <- [minrow -1 .. maxrow + 1], col <- [mincol -1 .. maxcol + 1]]
+    ps = [(row, col) | row <- [minrow -1 .. maxrow + 1], col <- [mincol -1 .. maxcol + 1]]
     handlePoint :: Point -> Set Point -> Set Point
     handlePoint point acc = case imageEnhancer V.! readNeighbors (Image image Bounds {..} outside) point of
       Dark -> acc

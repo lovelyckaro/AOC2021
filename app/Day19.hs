@@ -2,16 +2,16 @@
 
 module Main where
 
+import Control.Monad
 import Data.Bifunctor
+import Data.Foldable
 import Data.List
 import Data.List.Split
+import Data.Map (Map)
+import qualified Data.Map as M
 import Data.Set (Set)
 import qualified Data.Set as S
 import SantaLib
-import Data.Foldable
-import Data.Map (Map)
-import qualified Data.Map as M
-import Control.Monad
 
 pInp :: String -> [(Int, [Point])]
 pInp inp = withPoints
@@ -73,7 +73,7 @@ rotations =
     [X, Y, Y, Y]
   ]
 
-possibleOrientations :: [Point] -> [[ Point]]
+possibleOrientations :: [Point] -> [[Point]]
 possibleOrientations points = do
   rots <- rotations
   return $ map (performRotations rots) points
@@ -82,10 +82,10 @@ performRotations :: [Axis] -> Point -> Point
 performRotations rots p = foldl' (flip rotate) p rots
 
 minus :: Point -> Point -> Point
-minus (a,b,c) (d,e,f) = (a - d, b - e, c - f)
+minus (a, b, c) (d, e, f) = (a - d, b - e, c - f)
 
 plus :: Point -> Point -> Point
-plus (a,b,c) (d,e,f) = (a + d, b + e, c + f)
+plus (a, b, c) (d, e, f) = (a + d, b + e, c + f)
 
 determineOne :: [Point] -> [Point] -> (Set Point, Point) -- (Set Point, Point)
 determineOne known unkown = points
@@ -94,10 +94,10 @@ determineOne known unkown = points
     makeFreqs :: [Point] -> Map Point Int
     makeFreqs = foldl' (\freqmap diff -> M.insertWith (+) diff 1 freqmap) M.empty
     possibleFreqs = unkown |> possibleOrientations |> map (\orientation -> (orientation, prod orientation)) |> map (second makeFreqs)
-    above12 = possibleFreqs |> map ( second (M.filter (>= 12))) |> filter (not . null . snd)
+    above12 = possibleFreqs |> map (second (M.filter (>= 12))) |> filter (not . null . snd)
     points :: (Set Point, Point)
     points = case above12 of
-      [] -> (S.empty, (0,0,0))
+      [] -> (S.empty, (0, 0, 0))
       good : _ -> good |> second (head . M.keys) |> (\(ps, trans) -> (S.fromList (map (plus trans) ps), trans))
 
 determineAll :: [[Point]] -> Set Point
@@ -106,7 +106,7 @@ determineAll (scanner0 : scanners) = go (S.fromList scanner0) scanners
   where
     go :: Set Point -> [[Point]] -> Set Point
     go known [] = known
-    go known (unknown: rest) 
+    go known (unknown : rest)
       | null newPoints = go known (rest <> [unknown])
       | otherwise = go (S.union known newPoints) rest
       where
@@ -114,7 +114,7 @@ determineAll (scanner0 : scanners) = go (S.fromList scanner0) scanners
 
 determineScannerPoses :: [[Point]] -> Set Point
 determineScannerPoses [] = S.empty
-determineScannerPoses (scanner0 : scanners) = go (S.fromList scanner0, S.singleton (0,0,0)) scanners
+determineScannerPoses (scanner0 : scanners) = go (S.fromList scanner0, S.singleton (0, 0, 0)) scanners
   where
     go :: (Set Point, Set Point) -> [[Point]] -> Set Point
     go (known, sPoses) [] = sPoses
@@ -125,7 +125,7 @@ determineScannerPoses (scanner0 : scanners) = go (S.fromList scanner0, S.singlet
         (newPoints, newScanPos) = determineOne (toList known) unknown
 
 manDist :: Point -> Point -> Int
-manDist (x1,y1,z1) (x2,y2,z2) = abs (x1 - x2) + abs(y1 - y2) + abs (z1 - z2)
+manDist (x1, y1, z1) (x2, y2, z2) = abs (x1 - x2) + abs (y1 - y2) + abs (z1 - z2)
 
 part1 :: String -> Int
 part1 inp = scanners |> determineAll |> S.size
@@ -138,7 +138,6 @@ part2 inp = maximum dists
     scanners = inp |> pInp |> map snd
     scannerPoses = scanners |> determineScannerPoses |> toList
     dists = liftM2 manDist scannerPoses scannerPoses
-
 
 main :: IO ()
 main = do

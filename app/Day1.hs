@@ -1,4 +1,5 @@
 module Main where
+
 import SantaLib
 
 part1 :: [Int] -> Int
@@ -11,16 +12,18 @@ windows :: [Int] -> [Int]
 windows xs = zipWith3 (\x y z -> x + y + z) xs (tail xs) (tail (tail xs))
 
 test :: [Int]
-test = [199,
-  200,
-  208,
-  210,
-  200,
-  207,
-  240,
-  269,
-  260,
-  263]
+test =
+  [ 199,
+    200,
+    208,
+    210,
+    200,
+    207,
+    240,
+    269,
+    260,
+    263
+  ]
 
 main :: IO ()
 main = do

@@ -1,11 +1,13 @@
-{-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE LambdaCase #-}
+
 module Main where
-import SantaLib
-import Control.Monad.State
+
 import Control.Monad.Except
+import Control.Monad.State
 import Data.Foldable
 import Data.List
+import SantaLib
 
 data BlockType = Paren | Square | Curly | Spike
   deriving (Show, Eq)
@@ -30,15 +32,15 @@ push :: BlockType -> ParenM ()
 push bt = do
   stack <- get
   put (bt : stack)
-  
+
 pop :: BlockType -> ParenM ()
 pop bt = do
   stack <- get
   case stack of
     [] -> throwError ClosingEmpty
-    (x:xs) | x == bt -> put xs
-           | otherwise -> throwError $ WrongTerminator bt
-
+    (x : xs)
+      | x == bt -> put xs
+      | otherwise -> throwError $ WrongTerminator bt
 
 handleChar :: Char -> ParenM ()
 handleChar = \case
@@ -63,13 +65,13 @@ corruptScore = \case
     Curly -> 1197
     Spike -> 25137
   Left ClosingEmpty -> undefined
-  Right ((),_) -> 0
+  Right ((), _) -> 0
 
 incompleteScore :: Either BlockError ((), ParseStack) -> Int
 incompleteScore = \case
   Left _ -> 0
-  Right ((), xs) -> foldl' (\n pb -> 5 * n + typeToScore pb) 0  xs
-    where 
+  Right ((), xs) -> foldl' (\n pb -> 5 * n + typeToScore pb) 0 xs
+    where
       typeToScore = \case
         Paren -> 1
         Square -> 2
@@ -83,11 +85,11 @@ part1 :: String -> Int
 part1 inp = inp |> lines |> map handleLine |> map corruptScore |> sum
 
 part2 inp = inp |> lines |> map handleLine |> map incompleteScore |> filter (/= 0) |> sort |> middle
-    
+
 main :: IO ()
 main = do
   inp <- getInput 10
   ex <- getExample 10
   print (part2 ex)
-  putAnswer 10 Part1 (part1 inp)  
+  putAnswer 10 Part1 (part1 inp)
   putAnswer 10 Part2 (part2 inp)

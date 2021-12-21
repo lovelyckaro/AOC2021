@@ -1,11 +1,14 @@
 {-# LANGUAGE RecordWildCards #-}
+
 module Main where
-import SantaLib
+
 import Data.List.Split
 import Data.Maybe
+import SantaLib
 
-type Point = (Int,Int)
-data Area = Area {xmin, xmax, ymin, ymax :: Int }
+type Point = (Int, Int)
+
+data Area = Area {xmin, xmax, ymin, ymax :: Int}
 
 pInp :: String -> Area
 pInp inp = Area {..}
@@ -14,21 +17,20 @@ pInp inp = Area {..}
     [ymin, ymax] = inp |> dropWhile (/= ',') |> drop 4 |> splitOn ".." |> map read
 
 within :: Point -> Area -> Bool
-(x,y) `within` Area {..} = x >= xmin && x <= xmax && y >= ymin && y <= ymax
-
+(x, y) `within` Area {..} = x >= xmin && x <= xmax && y >= ymin && y <= ymax
 
 trajectoryUntilArea :: Area -> (Int, Int) -> Maybe [Point]
-trajectoryUntilArea area (xv,yv)  = go (0,0) (xv,yv)
+trajectoryUntilArea area (xv, yv) = go (0, 0) (xv, yv)
   where
     go :: Point -> (Int, Int) -> Maybe [Point]
-    go (x,y) (xv,yv) 
+    go (x, y) (xv, yv)
       | x > xmax area || y < ymin area = Nothing
-      | (x,y) `within` area = Just [(x,y)]
-      | xv < 0    = ((x,y) :) <$> go (x + xv, y + yv) (xv + 1, yv - 1)
-      | xv == 0   = ((x,y) :) <$> go (x     , y + yv) (0     , yv - 1)
-      | otherwise = ((x,y) :) <$> go (x + xv, y + yv) (xv - 1, yv - 1)
+      | (x, y) `within` area = Just [(x, y)]
+      | xv < 0 = ((x, y) :) <$> go (x + xv, y + yv) (xv + 1, yv - 1)
+      | xv == 0 = ((x, y) :) <$> go (x, y + yv) (0, yv - 1)
+      | otherwise = ((x, y) :) <$> go (x + xv, y + yv) (xv - 1, yv - 1)
 
-findAll :: Area -> [(Int,Int)]
+findAll :: Area -> [(Int, Int)]
 findAll area = possibleVelocities |> filter (isJust . trajectoryUntilArea area)
   where
     possibleVelocities = (,) <$> [0 .. xmax area] <*> [ymin area .. abs (ymin area)]
@@ -49,5 +51,5 @@ part2 inp = inp |> pInp |> findAll |> length
 main :: IO ()
 main = do
   inp <- getInput 17
-  putAnswer 17 Part1 (part1 inp) 
+  putAnswer 17 Part1 (part1 inp)
   putAnswer 17 Part2 (part2 inp)

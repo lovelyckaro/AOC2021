@@ -1,10 +1,11 @@
 module Main where
-import SantaLib
+
+import Data.Bifunctor
+import Data.Map (Map, (!), (!?))
+import qualified Data.Map as M
 import Data.Set (Set)
 import qualified Data.Set as S
-import Data.Bifunctor
-import Data.Map (Map, (!?), (!))
-import qualified Data.Map as M
+import SantaLib
 
 data Segment = Top | TopRight | TopLeft | Middle | Bottom | BottomRight | BottomLeft
   deriving (Show, Eq, Ord)
@@ -16,17 +17,19 @@ toDigit s = case m !? s of
   Just n -> n
   Nothing -> error $ "Could not find digit corresponding to " <> show s
   where
-    m = M.fromList 
-      [ (S.fromList [Top, TopRight, BottomRight, Bottom, BottomLeft, TopLeft], 0)
-      , (S.fromList [TopRight, BottomRight], 1) 
-      , (S.fromList [Top, TopRight, Middle, BottomLeft, Bottom], 2)
-      , (S.fromList [Top, TopRight, Middle, BottomRight, Bottom], 3)
-      , (S.fromList [TopLeft, TopRight, Middle, BottomRight], 4)
-      , (S.fromList [Top, TopLeft, Middle, BottomRight, Bottom], 5)
-      , (S.fromList [Top, TopLeft, Middle, BottomLeft, BottomRight, Bottom], 6)
-      , (S.fromList [Top, TopRight, BottomRight], 7)
-      , (S.fromList [Top, TopRight, TopLeft, Middle, BottomRight, BottomLeft , Bottom], 8)
-      , (S.fromList [Top, TopRight, TopLeft, Middle, BottomRight, Bottom], 9)]
+    m =
+      M.fromList
+        [ (S.fromList [Top, TopRight, BottomRight, Bottom, BottomLeft, TopLeft], 0),
+          (S.fromList [TopRight, BottomRight], 1),
+          (S.fromList [Top, TopRight, Middle, BottomLeft, Bottom], 2),
+          (S.fromList [Top, TopRight, Middle, BottomRight, Bottom], 3),
+          (S.fromList [TopLeft, TopRight, Middle, BottomRight], 4),
+          (S.fromList [Top, TopLeft, Middle, BottomRight, Bottom], 5),
+          (S.fromList [Top, TopLeft, Middle, BottomLeft, BottomRight, Bottom], 6),
+          (S.fromList [Top, TopRight, BottomRight], 7),
+          (S.fromList [Top, TopRight, TopLeft, Middle, BottomRight, BottomLeft, Bottom], 8),
+          (S.fromList [Top, TopRight, TopLeft, Middle, BottomRight, Bottom], 9)
+        ]
 
 getOne :: [Set Char] -> Set Char
 getOne = head . filter (\s -> S.size s == 2)
@@ -42,7 +45,7 @@ getFour = head . filter (\s -> S.size s == 4)
 
 determineTop :: [Set Char] -> (Char, Segment)
 determineTop sets = (S.elemAt 0 (seven S.\\ one), Top)
-  where 
+  where
     one = getOne sets
     seven = getSeven sets
 
@@ -61,13 +64,13 @@ determineMiddle sets = (middle, Middle)
     middle = S.elemAt 0 $ head $ filter (\s -> S.size s == 1) $ map (S.\\ threeWithoutMiddle) sets
 
 getThree :: [Set Char] -> Set Char
-getThree sets = getOne sets `S.union` S.fromList [c | (c,_) <- [determineTop sets, determineBottom sets, determineMiddle sets]]
+getThree sets = getOne sets `S.union` S.fromList [c | (c, _) <- [determineTop sets, determineBottom sets, determineMiddle sets]]
 
 determineBottomLeft :: [Set Char] -> (Char, Segment)
 determineBottomLeft sets = (bottomLeft, BottomLeft)
   where
     (topLeft, _) = determineTopLeft sets
-    nine = S.insert topLeft $ getThree sets 
+    nine = S.insert topLeft $ getThree sets
     eight = getEight sets
     bottomLeft = S.elemAt 0 $ eight S.\\ nine
 
@@ -81,7 +84,7 @@ determineTopRight sets = (topRight, TopRight)
 determineBottomRight :: [Set Char] -> (Char, Segment)
 determineBottomRight sets = (bottomRight, BottomRight)
   where
-    (topLeft,_) = determineTopLeft sets
+    (topLeft, _) = determineTopLeft sets
     nine = S.insert topLeft $ getThree sets
     (middle, _) = determineMiddle sets
     six = head $ filter (\s -> S.size s == 6 && s /= nine && S.member middle s) sets
@@ -96,15 +99,16 @@ determineTopLeft sets = (topLeft, TopLeft)
     topLeft = S.elemAt 0 $ four S.\\ three
 
 determineAll :: [Set Char] -> Key
-determineAll sets = M.fromList 
-  [ determineTop sets
-  , determineTopRight sets
-  , determineTopLeft sets
-  , determineMiddle sets
-  , determineBottomRight sets
-  , determineBottomLeft sets
-  , determineBottom sets
-  ]
+determineAll sets =
+  M.fromList
+    [ determineTop sets,
+      determineTopRight sets,
+      determineTopLeft sets,
+      determineMiddle sets,
+      determineBottomRight sets,
+      determineBottomLeft sets,
+      determineBottom sets
+    ]
 
 translate :: Key -> [Set Char] -> Int
 translate key sets = toInt digits
@@ -112,13 +116,14 @@ translate key sets = toInt digits
     segSet = map (S.map (key !)) sets
     digits = map toDigit segSet
     toInt [] = 0
-    toInt (x:xs) = x * 10^length xs + toInt xs
-  
+    toInt (x : xs) = x * 10 ^ length xs + toInt xs
+
 translateNum :: ([Set Char], [Set Char]) -> Int
 translateNum (signals, output) = translate key output
-  where key = determineAll signals
+  where
+    key = determineAll signals
 
-pInp :: String -> [([Set Char],[Set Char])]
+pInp :: String -> [([Set Char], [Set Char])]
 pInp str = sets
   where
     ls = lines str
@@ -127,7 +132,8 @@ pInp str = sets
 
 is1478 :: Set Char -> Bool
 is1478 s = size == 2 || size == 7 || size == 4 || size == 3
-  where size = S.size s
+  where
+    size = S.size s
 
 outputs :: [([Set Char], [Set Char])] -> [Set Char]
 outputs = concatMap snd
@@ -145,4 +151,3 @@ main = do
   inp <- getInput 8
   putAnswer 8 Part1 (part1 inp)
   putAnswer 8 Part2 (part2 inp)
-

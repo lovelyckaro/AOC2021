@@ -1,12 +1,14 @@
 module Main where
+
+import Control.Monad
+import Data.Void
 import SantaLib
 import Text.Megaparsec hiding (getInput)
 import Text.Megaparsec.Char
 import Text.Megaparsec.Char.Lexer
-import Data.Void 
-import Control.Monad
 
 type Parser = Parsec Void String
+
 data SnailFish = Normal Int | Pair SnailFish SnailFish
 
 instance Show SnailFish where
@@ -40,7 +42,7 @@ addLeftMost n (Normal n1) = Normal (n + n1)
 addLeftMost n (Pair l r) = Pair (addLeftMost n l) r
 
 data ExplodeResult = None | Done SnailFish | AddBoth Int Int SnailFish | AddRight Int SnailFish | AddLeft Int SnailFish
-  deriving Show
+  deriving (Show)
 
 explode :: SnailFish -> ExplodeResult
 explode = go 0
@@ -52,7 +54,7 @@ explode = go 0
       (Done l') -> Done (Pair l' r)
       (AddBoth nl nr l') -> AddLeft nl (Pair l' (addLeftMost nr r))
       (AddRight nr l') -> Done (Pair l' (addLeftMost nr r))
-      (AddLeft nl l') -> AddLeft nl ( Pair l' r)
+      (AddLeft nl l') -> AddLeft nl (Pair l' r)
       None -> case go (depth + 1) r of
         (Done r') -> Done (Pair l r')
         (AddBoth nl nr r') -> AddRight nr (Pair (addRightMost nl l) r')
@@ -62,14 +64,14 @@ explode = go 0
     go _ (Normal n) = None
 
 data SplitResult = NoSplit | DoneSplit SnailFish
-  deriving Show
+  deriving (Show)
 
 split :: SnailFish -> SplitResult
-split (Normal n) 
-  | n >= 10 = DoneSplit $ Pair (Normal $ n `div` 2) (Normal $ (n+1) `div` 2)
+split (Normal n)
+  | n >= 10 = DoneSplit $ Pair (Normal $ n `div` 2) (Normal $ (n + 1) `div` 2)
   | otherwise = NoSplit
 split (Pair l r) = case split l of
-  DoneSplit l' ->  DoneSplit (Pair l' r)
+  DoneSplit l' -> DoneSplit (Pair l' r)
   NoSplit -> case split r of
     DoneSplit r' -> DoneSplit (Pair l r')
     NoSplit -> NoSplit
@@ -92,7 +94,7 @@ magnitude (Normal n) = n
 magnitude (Pair l r) = magnitude l * 3 + magnitude r * 2
 
 part1 :: [SnailFish] -> Int
-part1 fishes = foldl1 add fishes |> magnitude 
+part1 fishes = foldl1 add fishes |> magnitude
 
 part2 :: [SnailFish] -> Int
 part2 fishes = maximum $ magnitude <$> (add <$> fishes <*> fishes)
@@ -101,7 +103,7 @@ main :: IO ()
 main = do
   inp <- getInput 18
   fishes <- case parse pInp "input" inp of
-        Left error -> fail $ errorBundlePretty error
-        Right sfs -> return sfs
-  putAnswer 18 Part1 (part1 fishes) 
+    Left error -> fail $ errorBundlePretty error
+    Right sfs -> return sfs
+  putAnswer 18 Part1 (part1 fishes)
   putAnswer 18 Part2 (part2 fishes)

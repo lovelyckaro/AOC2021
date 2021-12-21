@@ -1,13 +1,15 @@
 module Main where
-import SantaLib
-import Control.Monad.State
 
-data Packet = Literal {version :: Int, value :: Int}
-            | Operator {version :: Int, operation :: Op, subpackets :: [Packet] }
-  deriving Show
+import Control.Monad.State
+import SantaLib
+
+data Packet
+  = Literal {version :: Int, value :: Int}
+  | Operator {version :: Int, operation :: Op, subpackets :: [Packet]}
+  deriving (Show)
 
 data Op = Sum | Product | Minimum | Maximum | GreaterThan | LessThan | EqualTo
-  deriving Show
+  deriving (Show)
 
 readN :: Int -> State String String
 readN n = state (splitAt n)
@@ -78,14 +80,14 @@ eval (Operator _ op ps) = case op of
   Minimum -> minimum (map eval ps)
   Maximum -> maximum (map eval ps)
   GreaterThan -> let [v1, v2] = map eval ps in fromEnum $ v1 > v2
-  LessThan -> let [v1,v2] = map eval ps in fromEnum $ v1 < v2
-  EqualTo -> let [v1,v2] = map eval ps in fromEnum $ v1 == v2
+  LessThan -> let [v1, v2] = map eval ps in fromEnum $ v1 < v2
+  EqualTo -> let [v1, v2] = map eval ps in fromEnum $ v1 == v2
 
 binary :: String -> Int
 binary [] = 0
-binary ('0':xs) = binary xs
-binary ('1':xs) = 2^length xs + binary xs
-binary (_:xs) = undefined
+binary ('0' : xs) = binary xs
+binary ('1' : xs) = 2 ^ length xs + binary xs
+binary (_ : xs) = undefined
 
 toBin :: Char -> String
 toBin '0' = "0000"
@@ -116,4 +118,4 @@ main :: IO ()
 main = do
   inp <- getInput 16
   putAnswer 16 Part1 (part1 inp)
-  putAnswer 16 Part2 (part2 inp) 
+  putAnswer 16 Part2 (part2 inp)

@@ -1,17 +1,19 @@
 module Main where
-import SantaLib
-import Data.List
+
 import Data.IntMap (IntMap)
 import qualified Data.IntMap as IM
+import Data.List
+import SantaLib
 
 type Amount = Int
+
 type School = IntMap Amount
 
 tickSchool :: School -> School
 tickSchool = IM.foldlWithKey age IM.empty
   where
     age im 0 m = IM.insertWith (+) 8 m $ IM.insertWith (+) 6 m im
-    age im n m = IM.insertWith (+) (n-1) m im
+    age im n m = IM.insertWith (+) (n -1) m im
 
 pInp :: String -> School
 pInp s = foldl' (\im age -> IM.insertWith (+) age 1 im) IM.empty ages
